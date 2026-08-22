@@ -22,55 +22,55 @@ To write a program to predict the profit of a city using the linear regression m
 ## Program:
 
 ```
-
+import pandas as pd
 import numpy as np
 
-# Input data: City population (in 10,000s)
-X = np.array([6.1, 5.0, 8.2, 7.5, 4.5, 9.0, 3.5, 6.8])
+# Read CSV file
+data = pd.read_csv("50_Startups.csv")
 
-# Output data: Profit (in $10,000s)
-y = np.array([17.0, 14.0, 25.0, 22.0, 13.0, 28.0, 10.0, 20.0])
+# Select input and output
+X = data[['R&D Spend']].values
+y = data['Profit'].values
+
+# Normalize input
+X_mean = np.mean(X)
+X_std = np.std(X)
+X = (X - X_mean) / X_std
 
 # Initialize parameters
 m = 0
-c = 0
-
-# Learning rate and number of iterations
+b = 0
 learning_rate = 0.01
 iterations = 1000
-
 n = len(X)
 
 # Gradient Descent
 for i in range(iterations):
+    y_pred = m * X.flatten() + b
 
-    # Prediction
-    y_pred = m * X + c
+    dm = (-2 / n) * np.sum(X.flatten() * (y - y_pred))
+    db = (-2 / n) * np.sum(y - y_pred)
 
-    # Calculate gradients
-    dm = (-2 / n) * np.sum(X * (y - y_pred))
-    dc = (-2 / n) * np.sum(y - y_pred)
-
-    # Update parameters
     m = m - learning_rate * dm
-    c = c - learning_rate * dc
+    b = b - learning_rate * db
 
 # Display model parameters
-print("Slope (m):", m)
-print("Intercept (c):", c)
+print("Slope:", m)
+print("Intercept:", b)
 
 # Predict profit for a new city
-population = float(input("Enter city population (in 10,000s): "))
+rd_spend = float(input("Enter R&D Spend: "))
 
-profit = m * population + c
+rd_scaled = (rd_spend - X_mean) / X_std
+profit = m * rd_scaled + b
 
-print("Predicted Profit:", profit, "($10,000s)")
+print("Predicted Profit:", profit)
 
 ```
 
 
 ## Output:
-<img width="939" height="707" alt="image" src="https://github.com/user-attachments/assets/336f8d11-7ec0-48e5-ad51-c85eeb285586" />
+<img width="996" height="627" alt="image" src="https://github.com/user-attachments/assets/86bb69a9-5d75-4395-add1-fcedc01e40f7" />
 
 
 ## Result:
